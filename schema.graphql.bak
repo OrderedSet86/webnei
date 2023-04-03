@@ -1,0 +1,88 @@
+# This file was generated based on ".graphqlconfig". Do not edit manually.
+
+schema {
+    query: Query
+}
+
+interface GregTechRecipe {
+    additionalInfo: String!
+    amperage: Int!
+    duration: Int!
+    id: String!
+    recipeId: String!
+    requiresCleanroom: Boolean!
+    requiresLowGravity: Boolean!
+    voltage: Int!
+    voltageTier: String!
+}
+
+"Minecraft Item"
+interface Item {
+    id: String!
+    imageFilePath: String!
+    internalName: String!
+    itemDamage: Int!
+    itemId: Int!
+    localizedName: String!
+    maxDamage: Int!
+    maxStackSize: Int!
+    modId: String!
+    nbt: String!
+    recipes: [Recipe!]!
+    tooltip: String!
+    unlocalizedName: String!
+    usages: [Recipe!]!
+}
+
+interface RecipeType {
+    category: String!
+    fluidInputDimensionHeight: Int!
+    fluidInputDimensionWidth: Int!
+    fluidOutputDimensionHeight: Int!
+    fluidOutputDimensionWidth: Int!
+    icon: Item!
+    iconId: String!
+    iconInfo: String!
+    id: String!
+    itemInputDimensionHeight: Int!
+    itemInputDimensionWidth: Int!
+    itemOutputDimensionHeight: Int!
+    itemOutputDimensionWidth: Int!
+    shapeless: Boolean!
+    type: String!
+}
+
+type InputItem {
+    itemStack: ItemStack!
+    key: Int!
+}
+
+type ItemStack {
+    item: Item!
+    stackSize: Int!
+}
+
+type OutputItem {
+    itemStack: ItemStack!
+    key: Int!
+    probability: Float!
+}
+
+"Query object"
+type Query {
+    items(itemId: String, limit: Int!, nameQuery: String): [Item!]!
+}
+
+type Recipe {
+    gregTechRecipe: GregTechRecipe
+    id: String!
+    inputs: [InputItem!]!
+    outputs: [OutputItem!]!
+    recipeType: RecipeType!
+}
+
+"The Long scalar type represents a signed 64-bit numeric non-fractional value"
+scalar Long
+
+"The Short scalar type represents a signed 16-bit numeric non-fractional value"
+scalar Short

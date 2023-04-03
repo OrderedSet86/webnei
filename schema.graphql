@@ -1,88 +1,73 @@
-# This file was generated based on ".graphqlconfig". Do not edit manually.
-
-schema {
-    query: Query
+type NEIBaseRecipe {
+  recipeId: String!
+  inputItems: [NEIItem!]!
+  inputFluids: [NEIFluid!]!
+  outputItems: [NEIItem!]!
+  outputFluids: [NEIItem!]!
 }
 
-interface GregTechRecipe {
-    additionalInfo: String!
-    amperage: Int!
-    duration: Int!
-    id: String!
-    recipeId: String!
-    requiresCleanroom: Boolean!
-    requiresLowGravity: Boolean!
-    voltage: Int!
-    voltageTier: String!
+type NEIFluid {
+  fluidId: Int!
+  position: Int!
+  liters: Int!
+  density: Int!
+  gaseous: Boolean!
+  imageFilePath: String!
+  internalName: String!
+  localizedName: String!
+  luminosity: Int!
+  modId: String!
+  nbt: String!
+  temperature: Int!
+  unlocalizedName: String!
+  viscosity: Int!
+  input: Boolean!
+  outputProbability: Float!
 }
 
-"Minecraft Item"
-interface Item {
-    id: String!
-    imageFilePath: String!
-    internalName: String!
-    itemDamage: Int!
-    itemId: Int!
-    localizedName: String!
-    maxDamage: Int!
-    maxStackSize: Int!
-    modId: String!
-    nbt: String!
-    recipes: [Recipe!]!
-    tooltip: String!
-    unlocalizedName: String!
-    usages: [Recipe!]!
+type NEIGtRecipe {
+  recipeId: Int!
+  baseRecipe: NEIBaseRecipe!
+  localizedMachineName: String!
+  fluidInputDims: NEIRecipeDimensions!
+  fluidOutputDims: NEIRecipeDimensions!
+  itemInputDims: NEIRecipeDimensions!
+  itemOutputDims: NEIRecipeDimensions!
+  iconInfo: String!
+  iconId: String!
+  shapeless: Boolean!
+  additionalInfo: String!
+  amperage: Int!
+  durationTicks: Int!
+  requiresCleanroom: Boolean!
+  requiresLowGravity: Boolean!
+  voltage: Int!
+  voltageTier: Int!
 }
 
-interface RecipeType {
-    category: String!
-    fluidInputDimensionHeight: Int!
-    fluidInputDimensionWidth: Int!
-    fluidOutputDimensionHeight: Int!
-    fluidOutputDimensionWidth: Int!
-    icon: Item!
-    iconId: String!
-    iconInfo: String!
-    id: String!
-    itemInputDimensionHeight: Int!
-    itemInputDimensionWidth: Int!
-    itemOutputDimensionHeight: Int!
-    itemOutputDimensionWidth: Int!
-    shapeless: Boolean!
-    type: String!
+type NEIItem {
+  itemId: String!
+  position: Int!
+  stackSize: Int!
+  imageFilePath: String!
+  internalName: String!
+  itemDamage: Int!
+  localizedName: String!
+  maxDamage: Int!
+  maxStackSize: Int!
+  modId: String!
+  nbt: String!
+  tooltip: String!
+  unlocalizedName: String!
+  input: Boolean!
+  outputProbability: Float!
 }
 
-type InputItem {
-    itemStack: ItemStack!
-    key: Int!
+type NEIRecipeDimensions {
+  height: Int!
+  width: Int!
 }
 
-type ItemStack {
-    item: Item!
-    stackSize: Int!
-}
-
-type OutputItem {
-    itemStack: ItemStack!
-    key: Int!
-    probability: Float!
-}
-
-"Query object"
 type Query {
-    items(itemId: String, limit: Int!, nameQuery: String): [Item!]!
+  recipe(recipeId: String!): NEIGtRecipe!
 }
-
-type Recipe {
-    gregTechRecipe: GregTechRecipe
-    id: String!
-    inputs: [InputItem!]!
-    outputs: [OutputItem!]!
-    recipeType: RecipeType!
-}
-
-"The Long scalar type represents a signed 64-bit numeric non-fractional value"
-scalar Long
-
-"The Short scalar type represents a signed 16-bit numeric non-fractional value"
-scalar Short
