@@ -4,108 +4,103 @@ import {Center, Flex, Grid, ScrollArea, Stack, TextInput, Text} from "@mantine/c
 import {gql} from "./__generated__";
 import {useQuery} from "@apollo/client";
 import ItemStackDisplay from "./components/ItemStack";
-import {Item} from "./__generated__/graphql";
+// import {Item} from "./__generated__/graphql";
 import {useDebouncedState} from "@mantine/hooks";
 import {ItemRecipes} from "./components/ItemRecipes";
 import {GRAPHQL_URL} from "./config";
 
-const BASIC_ITEM_INFO = gql(/* GraphQL */`
-    fragment BasicItemInfo on Item {
-        id,
-        imageFilePath,
-        tooltip,
-        localizedName
-    }
-`);
 
-const GET_ITEMS = gql(/* GraphQL */`
-    query GetItems($query: String!, $limit: Int!) {
-        items(nameQuery: $query, limit: $limit) {
-            ...BasicItemInfo
+const GET_SIDEBAR_ITEMS = gql(/* GraphQL */`
+    query SidebarItems($limit: Int!) {
+        getNSidebarItems(limit: $limit) {
+            itemId
+            imageFilePath,
+            tooltip,
+            localizedName
         }
     }
 `);
 
-const RECIPE_INFO = gql(/* GraphQL */`
-    fragment RecipeInfo on Recipe {
-        id,
-        gregTechRecipe {
-            id
-            additionalInfo
-            amperage
-            duration
-            requiresCleanroom
-            requiresLowGravity
-            voltage
-            voltageTier
-        }
-        inputs {
-            key
-            itemStack {
-                item {
-                    ...BasicItemInfo
-                }
-                stackSize
-            }
-        }
-        outputs {
-            key
-            probability
-            itemStack {
-                item {
-                    ...BasicItemInfo
-                }
-                stackSize
-            }
-        }
-        recipeType {
-            category
-            fluidInputDimensionHeight
-            fluidInputDimensionWidth
-            fluidOutputDimensionHeight
-            fluidOutputDimensionWidth
-            icon {
-                ...BasicItemInfo
-            }
-            id
-            itemInputDimensionHeight
-            itemInputDimensionWidth
-            itemOutputDimensionHeight
-            itemOutputDimensionWidth
-            shapeless
-            type
-        }
-    }
-`);
+// const RECIPE_INFO = gql(/* GraphQL */`
+//     fragment RecipeInfo on Recipe {
+//         id,
+//         gregTechRecipe {
+//             id
+//             additionalInfo
+//             amperage
+//             duration
+//             requiresCleanroom
+//             requiresLowGravity
+//             voltage
+//             voltageTier
+//         }
+//         inputs {
+//             key
+//             itemStack {
+//                 item {
+//                     ...BasicItemInfo
+//                 }
+//                 stackSize
+//             }
+//         }
+//         outputs {
+//             key
+//             probability
+//             itemStack {
+//                 item {
+//                     ...BasicItemInfo
+//                 }
+//                 stackSize
+//             }
+//         }
+//         recipeType {
+//             category
+//             fluidInputDimensionHeight
+//             fluidInputDimensionWidth
+//             fluidOutputDimensionHeight
+//             fluidOutputDimensionWidth
+//             icon {
+//                 ...BasicItemInfo
+//             }
+//             id
+//             itemInputDimensionHeight
+//             itemInputDimensionWidth
+//             itemOutputDimensionHeight
+//             itemOutputDimensionWidth
+//             shapeless
+//             type
+//         }
+//     }
+// `);
 
-const GET_RECIPE_BY_ITEM_ID = gql(/* GraphQL */`
-    query GetRecipeByItemId($itemId: String!) {
-        items(itemId: $itemId, limit: 1) {
-            recipes {
-                ...RecipeInfo
-            }
-        }
-    }
-`);
+// const GET_RECIPE_BY_ITEM_ID = gql(/* GraphQL */`
+//     query GetRecipeByItemId($itemId: String!) {
+//         items(itemId: $itemId, limit: 1) {
+//             recipes {
+//                 ...RecipeInfo
+//             }
+//         }
+//     }
+// `);
 
-const GET_USAGE_BY_ITEM_ID = gql(/* GraphQL */`
-    query GetUsageByItemId($itemId: String!) {
-        items(itemId: $itemId, limit: 1) {
-            usages {
-                ...RecipeInfo
-            }
-        }
-    }
-`);
+// const GET_USAGE_BY_ITEM_ID = gql(/* GraphQL */`
+//     query GetUsageByItemId($itemId: String!) {
+//         items(itemId: $itemId, limit: 1) {
+//             usages {
+//                 ...RecipeInfo
+//             }
+//         }
+//     }
+// `);
 
 function App() {
     const [query, setQuery] = useDebouncedState("", 500);
     const limit = 64;
     const {data} = useQuery(
-        GET_ITEMS,
-        {variables: {query: `%${query}%`, limit: limit}}
+        GET_SIDEBAR_ITEMS,
+        {variables: {limit: limit}}
     );
-    const [selectedItem, setSelectedItem] = useState<Item | null>(null);
+    // const [selectedItem, setSelectedItem] = useState<Item | null>(null);
     const [lookupMode, setLookupMode] = useState<"recipes" | "usage">("recipes");
     const {data: recipeData, loading} = useQuery(
         lookupMode=="recipes" ? GET_RECIPE_BY_ITEM_ID : GET_USAGE_BY_ITEM_ID, {variables: {itemId: selectedItem?.id ?? ''}}
@@ -132,9 +127,10 @@ function App() {
                                 align="center"
                                 direction="row"
                                 wrap="wrap"
-                            >{data && data.items.map((item: Item) => (
+                            >
+                            {/* {data && data.items.map((item: Item) => (
                                 <ItemStackDisplay key={item.id} item={item} onClick={selectRecipe}/>
-                            ))}
+                            ))} */}
                             </Flex>
                             {data && data.items.length == limit && (<Text>Search limit of {limit} items reached</Text>)}
                         </ScrollArea>
